@@ -3,66 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منشئ الفيديوهات بالذكاء الاصطناعي</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>توليد وتعديل الفيديوهات بالذكاء الاصطناعي</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="max-w-xl w-full bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
-        <h1 class="text-3xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-            صانع الفيديوهات بالذكاء الاصطناعي
-        </h1>
-        <p class="text-gray-400 text-center mb-6">ارفع صورتك أو فيديو، اكتب وصفك، واحصل على فيديو جاهز للتحميل بصيغة MP4.</p>
+    <div class="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8">
+        
+        <!-- عنوان الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 mb-2">
+                مولد الفيديوهات بالذكاء الاصطناعي
+            </h1>
+            <p class="text-slate-400 text-sm">قم برفع صورتك أو فيديو وكتابة وصفك لتحويله إلى فيديو احترافي</p>
+        </div>
 
         <!-- نموذج الرفع -->
-        <form id="uploadForm" class="space-y-5">
-            <div class="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center hover:border-purple-500 transition cursor-pointer relative bg-gray-900/50">
-                <input type="file" id="mediaFile" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" required>
-                <div class="flex flex-col items-center">
-                    <svg class="w-10 h-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    <p class="text-sm text-gray-300 font-medium">اختر صورة أو فيديو أو اسحبه هنا</p>
-                    <span id="fileName" class="text-xs text-purple-400 mt-2 font-semibold"></span>
+        <form id="uploadForm" class="space-y-6">
+            
+            <!-- حقل رفع الملف -->
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">اختر ملف (صورة أو فيديو)</label>
+                <div class="flex items-center justify-center w-full">
+                    <label for="mediaFile" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-700 border-dashed rounded-xl cursor-pointer bg-slate-800/50 hover:bg-slate-800 transition duration-200">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
+                            <svg class="w-8 h-8 mb-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="mb-2 text-sm text-slate-300"><span class="font-semibold">انقر للرفع</span> أو سحب وإفلات</p>
+                            <p id="fileName" class="text-xs text-slate-400">PNG, JPG, MP4, MOV (الحد الأقصى 50MB)</p>
+                        </div>
+                        <input id="mediaFile" type="file" class="hidden" accept="image/*,video/*" required />
+                    </label>
                 </div>
             </div>
 
+            <!-- حقل الوصف (Prompt) -->
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">وصف الفيديو المطلوب (Prompt):</label>
-                <textarea id="promptText" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:border-purple-500 focus:outline-none" placeholder="صف كيف يتحرك الفيديو..." required></textarea>
+                <label for="promptText" class="block text-sm font-medium text-slate-300 mb-2">وصف التعديل أو الحركة المطلوبة</label>
+                <textarea id="promptText" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition duration-200" placeholder="اكتب وصفاً تفصيلياً للفيديو الذي ترغب في توليده..." required></textarea>
             </div>
 
+            <!-- اختيار مدة الفيديو -->
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">المدة الزمنية بالفيديو:</label>
-                <select id="durationSelect" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:border-purple-500 focus:outline-none">
+                <label for="durationSelect" class="block text-sm font-medium text-slate-300 mb-2">مدة الفيديو التقديرية</label>
+                <select id="durationSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-purple-500 transition duration-200">
                     <option value="5">5 ثوانٍ (سريع)</option>
                     <option value="10">10 ثوانٍ (متوسط)</option>
-                    <option value="15">15 ثانية (أقصى مدة)</option>
+                    <option value="15">15 ثانية (عالي الجودة)</option>
                 </select>
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 cursor-pointer">
-                إنشاء وتحويل الفيديو 🚀
+            <!-- زر الإرسال -->
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition duration-200 cursor-pointer">
+                بدء المعالجة والتوليد 🚀
             </button>
         </form>
 
-        <!-- قسم التحميل والنتيجة -->
-        <div id="resultSection" class="hidden mt-8 border-t border-gray-700 pt-6">
-            <h2 class="text-lg font-semibold mb-3 text-purple-300 text-center">حالة المعالجة:</h2>
+        <!-- قسم النتيجة وشريط التقدم -->
+        <div id="resultSection" class="hidden mt-8 pt-6 border-t border-slate-800 text-center space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200">حالة المعالجة</h3>
             
-            <div class="w-full bg-gray-700 rounded-full h-4 mb-3 overflow-hidden">
-                <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-0 transition-all duration-300"></div>
+            <!-- شريط التقدم -->
+            <div class="w-full bg-slate-800 rounded-full h-4 overflow-hidden p-0.5 border border-slate-700">
+                <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
-
-            <div class="flex justify-between text-xs text-gray-400 mb-4">
+            
+            <div class="flex justify-between text-xs text-slate-400 px-1">
                 <span id="progressPercent">0%</span>
-                <span id="timeRemaining">الوقت المقدر المتبقي: جاري الحساب...</span>
+                <span id="timeRemaining">جاري الاستعداد... (قد يستغرق استيقاظ السيرفر بضع ثوانٍ)</span>
             </div>
 
-            <div id="outputContainer" class="bg-gray-900 rounded-xl p-4 text-center">
-                <p id="statusText" class="text-gray-400">جاري المعالجة السحابية...</p>
-            </div>
+            <!-- عرض الفيديو والتحميل -->
+            <div id="statusText" class="mt-4"></div>
         </div>
+
     </div>
 
     <script>
@@ -76,9 +99,10 @@
         const progressPercent = document.getElementById('progressPercent');
         const timeRemaining = document.getElementById('timeRemaining');
 
-        // ضع رابط سيرفرك على Render هنا (بدون /upload/ في هذه الحالة لأننا سنلحق المسارات)
+        // رابط السيرفر الخلفي على Render
         const BASE_BACKEND_URL = "https://aivedio-backend.onrender.com";
 
+        // عرض اسم الملف المختار
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 fileNameSpan.textContent = `الملف المختار: ${e.target.files[0].name}`;
@@ -101,6 +125,7 @@
             resultSection.classList.remove('hidden');
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            statusText.innerHTML = '';
 
             let totalEstimatedTime = parseInt(duration) * 1200; 
             let elapsedTime = 0;
@@ -134,22 +159,41 @@
                 if (response.ok) {
                     const fullDownloadUrl = BASE_BACKEND_URL + data.download_url;
                     
+                    // جلب الملف كـ Blob لمنع مغادرة الصفحة وضمان عمل مشغل الفيديو والتحميل 100%
+                    const videoResponse = await fetch(fullDownloadUrl);
+                    const videoBlob = await videoResponse.blob();
+                    const videoBlobUrl = URL.createObjectURL(videoBlob);
+
                     statusText.innerHTML = `
-                        <span class="text-green-400 font-bold mb-2 block">✨ أصبح الفيديو جاهزاً!</span>
-                        <video controls class="w-full rounded-lg mb-4 max-h-60 mx-auto">
-                            <source src="${fullDownloadUrl}" type="video/mp4">
+                        <span class="text-green-400 font-bold mb-3 block text-base">✨ أصبح الفيديو جاهزاً بنجاح!</span>
+                        <video controls autoplay class="w-full rounded-xl mb-4 max-h-72 mx-auto border border-purple-500 shadow-lg">
+                            <source src="${videoBlobUrl}" type="video/mp4">
                             متصفحك لا يدعم عرض الفيديو.
                         </video>
-                        <a href="${fullDownloadUrl}" download="${data.filename}" class="inline-block bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition duration-200">
-                            تحميل الفيديو (MP4) 📥
-                        </a>
+                        <button id="downloadBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-200 cursor-pointer flex items-center justify-center gap-2">
+                            <span>تحميل الفيديو (MP4)</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                        </button>
                     `;
+
+                    // تفعيل زر التحميل بطريقة آمنة
+                    document.getElementById('downloadBtn').addEventListener('click', () => {
+                        const a = document.createElement('a');
+                        a.href = videoBlobUrl;
+                        a.download = data.filename || "ai_video.mp4";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    });
+
                 } else {
                     throw new Error(data.detail || "حدث خطأ أثناء معالجة الفيديو.");
                 }
             } catch (error) {
                 clearInterval(progressInterval);
-                statusText.innerHTML = `<span class="text-red-400">❌ فشل العمليات: ${error.message}</span>`;
+                statusText.innerHTML = `<span class="text-red-400 font-semibold">❌ فشل العملية: ${error.message}</span>`;
                 timeRemaining.textContent = 'توقف المعالجة';
             } finally {
                 submitBtn.disabled = false;
