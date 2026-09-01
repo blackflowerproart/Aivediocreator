@@ -70,7 +70,7 @@ uploadForm.addEventListener('submit', async (e) => {
 
         if (response.ok) {
             const fullDownloadUrl = SERVER_URL + data.download_url;
-            
+            const fullDownloadUrl = "https://aivedio-backend.onrender.com" + data.download_url;
             // جلب ملف الفيديو كـ Blob لضمان تشغيله وتحميله دون إعادة توجيه الصفحة
             const videoResponse = await fetch(fullDownloadUrl);
             const videoBlob = await videoResponse.blob();
