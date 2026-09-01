@@ -99,8 +99,8 @@
         const progressPercent = document.getElementById('progressPercent');
         const timeRemaining = document.getElementById('timeRemaining');
 
-        // رابط السيرفر السحابي المباشر بدون أي أخطاء
-        const BASE_URL = "https://aivedio-backend.onrender.com";
+        // الرابط المباشر والصحيح بالكامل بدون أي متغيرات مفقودة
+        const SERVER_URL = "https://aivedio-backend.onrender.com";
 
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
@@ -143,7 +143,7 @@
             }, intervalTime);
 
             try {
-                const response = await fetch(`${BASE_URL}/upload/`, {
+                const response = await fetch(`${SERVER_URL}/upload/`, {
                     method: 'POST',
                     body: formData
                 });
@@ -156,7 +156,7 @@
                 timeRemaining.textContent = 'اكتملت المعالجة بنجاح!';
 
                 if (response.ok) {
-                    const fullDownloadUrl = BASE_URL + data.download_url;
+                    const fullDownloadUrl = SERVER_URL + data.download_url;
                     
                     const videoResponse = await fetch(fullDownloadUrl);
                     const videoBlob = await videoResponse.blob();
