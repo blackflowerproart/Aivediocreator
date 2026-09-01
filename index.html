@@ -99,10 +99,9 @@
         const progressPercent = document.getElementById('progressPercent');
         const timeRemaining = document.getElementById('timeRemaining');
 
-        // رابط السيرفر السحابي الصحيح والمباشر على Render
-        const BASE_BACKEND_URL = "https://aivedio-backend.onrender.com";
+        // رابط السيرفر السحابي المباشر بدون أي أخطاء
+        const BASE_URL = "https://aivedio-backend.onrender.com";
 
-        // عرض اسم الملف المختار
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 fileNameSpan.textContent = `الملف المختار: ${e.target.files[0].name}`;
@@ -144,7 +143,7 @@
             }, intervalTime);
 
             try {
-                const response = await fetch(`${BASE_BACKEND_URL}/upload/`, {
+                const response = await fetch(`${BASE_URL}/upload/`, {
                     method: 'POST',
                     body: formData
                 });
@@ -157,9 +156,8 @@
                 timeRemaining.textContent = 'اكتملت المعالجة بنجاح!';
 
                 if (response.ok) {
-                    const fullDownloadUrl = BASE_BACKEND_URL + data.download_url;
+                    const fullDownloadUrl = BASE_URL + data.download_url;
                     
-                    // جلب الملف كـ Blob لمنع مغادرة الصفحة وضمان عمل مشغل الفيديو والتحميل بكفاءة
                     const videoResponse = await fetch(fullDownloadUrl);
                     const videoBlob = await videoResponse.blob();
                     const videoBlobUrl = URL.createObjectURL(videoBlob);
@@ -178,7 +176,6 @@
                         </button>
                     `;
 
-                    // تفعيل زر التحميل الآمن
                     document.getElementById('downloadBtn').addEventListener('click', () => {
                         const a = document.createElement('a');
                         a.href = videoBlobUrl;
