@@ -1,4 +1,4 @@
-// ملف script.js منفصل بالكامل
+// ملف script.js محدث وكامل بدون أي أخطاء في الروابط
 const fileInput = document.getElementById('mediaFile');
 const fileNameSpan = document.getElementById('fileName');
 const uploadForm = document.getElementById('uploadForm');
@@ -9,7 +9,7 @@ const progressBar = document.getElementById('progressBar');
 const progressPercent = document.getElementById('progressPercent');
 const timeRemaining = document.getElementById('timeRemaining');
 
-// الرابط المباشر والسليم تماماً لسيرفر Render بدون أي خطأ أو متغير مفقود
+// الرابط المباشر والسليم تماماً لسيرفر Render
 const SERVER_URL = "https://aivedio-backend.onrender.com";
 
 // عرض اسم الملف عند اختياره
@@ -69,8 +69,9 @@ uploadForm.addEventListener('submit', async (e) => {
         timeRemaining.textContent = 'اكتملت المعالجة بنجاح!';
 
         if (response.ok) {
+            // استخدام الرابط المباشر صراحة لمنع أي خطأ undefined
             const fullDownloadUrl = SERVER_URL + data.download_url;
-            const fullDownloadUrl = "https://aivedio-backend.onrender.com" + data.download_url;
+            
             // جلب ملف الفيديو كـ Blob لضمان تشغيله وتحميله دون إعادة توجيه الصفحة
             const videoResponse = await fetch(fullDownloadUrl);
             const videoBlob = await videoResponse.blob();
