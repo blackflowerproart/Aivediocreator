@@ -32,7 +32,7 @@
             </div>
 
             <!-- زر الإرسال -->
-            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200">
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 cursor-pointer">
                 إنشاء الفيديو بالذكاء الاصطناعي 🚀
             </button>
         </form>
@@ -40,8 +40,8 @@
         <!-- قسم عرض النتيجة (مخفي مؤقتاً) -->
         <div id="resultSection" class="hidden mt-8 text-center border-t border-gray-700 pt-6">
             <h2 class="text-xl font-semibold mb-4 text-purple-300">النتيجة:</h2>
-            <div id="outputContainer" class="bg-gray-900 rounded-xl p-4 flex items-center justify-center min-h-[200px]">
-                <p class="text-gray-400 animate-pulse">جاري المعالجة بواسطة الذكاء الاصطناعي... يرجى الانتظار.</p>
+            <div id="outputContainer" class="bg-gray-900 rounded-xl p-4 flex items-center justify-center min-h-[150px]">
+                <p id="statusText" class="text-gray-400 animate-pulse">جاري معالجة الملف بواسطة الذكاء الاصطناعي... يرجى الانتظار.</p>
             </div>
         </div>
     </div>
@@ -51,6 +51,12 @@
         const fileNameSpan = document.getElementById('fileName');
         const uploadForm = document.getElementById('uploadForm');
         const resultSection = document.getElementById('resultSection');
+        const statusText = document.getElementById('statusText');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ضع رابط السيرفر الخاص بك هنا (عند رفعه على Render، أو استعمل localhost للتجربة المحلية)
+        const BACKEND_URL = "http://127.0.0.1:8000/upload/"; 
+        // مثال لرابط Render لاحقاً: "https://aivedio-backend.onrender.com/upload/"
 
         // إظهار اسم الملف المختار
         fileInput.addEventListener('change', (e) => {
@@ -59,14 +65,44 @@
             }
         });
 
-        // محاكاة عملية الإرسال والمعالجة
-        uploadForm.addEventListener('submit', (e) => {
+        // إرسال الملف فعلياً إلى السيرفر
+        uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!fileInput.files.length) return;
 
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // إظهار قسم النتيجة بحالة التحميل
             resultSection.classList.remove('hidden');
-            
-            // هنا لاحقاً سنقوم بربط الكود بإرسال الملف إلى الـ Backend (Python)
+            statusText.textContent = "جاري رفع الملف إلى الخادم والمعالجة...";
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusText.innerHTML = `
+                        <span class="text-green-400 font-bold">✨ تم بنجاح!</span><br>
+                        <span class="text-sm text-gray-300 mt-2 block">اسم الملف المستلم: ${data.filename}</span>
+                        <p class="text-xs text-gray-500 mt-2">المسار على السيرفر: ${data.saved_path}</p>
+                    `;
+                } else {
+                    throw new Error(data.detail || "حدث خطأ غير معروف أثناء المعالجة.");
+                }
+            } catch (error) {
+                statusText.innerHTML = `<span class="text-red-400">❌ فشل الاتصال بالخادم: تأكد من تشغيل سيرفر البايثون أو صحة الرابط. (${error.message})</span>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
         });
     </script>
 </body>
