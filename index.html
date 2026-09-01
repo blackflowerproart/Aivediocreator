@@ -39,7 +39,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
                             <p class="mb-2 text-sm text-slate-300"><span class="font-semibold">انقر للرفع</span> أو سحب وإفلات</p>
-                            <p id="fileName" class="text-xs text-slate-400">PNG, JPG, MP4, MOV (الحد الأقصى 50MB)</p>
+                            <p id="fileName" class="text-xs text-slate-400">PNG, JPG, MP4, MOV</p>
                         </div>
                         <input id="mediaFile" type="file" class="hidden" accept="image/*,video/*" required />
                     </label>
@@ -79,7 +79,7 @@
             
             <div class="flex justify-between text-xs text-slate-400 px-1">
                 <span id="progressPercent">0%</span>
-                <span id="timeRemaining">جاري الاستعداد... (قد يستغرق استيقاظ السيرفر بضع ثوانٍ)</span>
+                <span id="timeRemaining">جاري الاستعداد... (إذا كان الخادم نائماً، قد يستغرق الاستيقاظ أول مرة 30 ثانية)</span>
             </div>
 
             <!-- عرض الفيديو والتحميل -->
@@ -99,7 +99,7 @@
         const progressPercent = document.getElementById('progressPercent');
         const timeRemaining = document.getElementById('timeRemaining');
 
-        // رابط السيرفر الخلفي على Render
+        // رابط السيرفر السحابي الصحيح والمباشر على Render
         const BASE_BACKEND_URL = "https://aivedio-backend.onrender.com";
 
         // عرض اسم الملف المختار
@@ -159,7 +159,7 @@
                 if (response.ok) {
                     const fullDownloadUrl = BASE_BACKEND_URL + data.download_url;
                     
-                    // جلب الملف كـ Blob لمنع مغادرة الصفحة وضمان عمل مشغل الفيديو والتحميل 100%
+                    // جلب الملف كـ Blob لمنع مغادرة الصفحة وضمان عمل مشغل الفيديو والتحميل بكفاءة
                     const videoResponse = await fetch(fullDownloadUrl);
                     const videoBlob = await videoResponse.blob();
                     const videoBlobUrl = URL.createObjectURL(videoBlob);
@@ -178,7 +178,7 @@
                         </button>
                     `;
 
-                    // تفعيل زر التحميل بطريقة آمنة
+                    // تفعيل زر التحميل الآمن
                     document.getElementById('downloadBtn').addEventListener('click', () => {
                         const a = document.createElement('a');
                         a.href = videoBlobUrl;
