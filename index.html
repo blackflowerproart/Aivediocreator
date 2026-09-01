@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منشئ الفيديوهات بالذكاء الاصطناعي</title>
-    <!-- تضمين مكتبة Tailwind CSS للتصميم -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
@@ -13,22 +12,37 @@
         <h1 class="text-3xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
             صانع الفيديوهات بالذكاء الاصطناعي
         </h1>
-        <p class="text-gray-400 text-center mb-8">ارفع صورة أو فيديو، واجعل الذكاء الاصطناعي يحوله لك إلى تحفة فنية.</p>
+        <p class="text-gray-400 text-center mb-6">ارفع صورة أو فيديو، اكتب وصفك، وحدد المدة لإنشاء تحفتك الفنية.</p>
 
         <!-- نموذج الرفع -->
-        <form id="uploadForm" class="space-y-6">
+        <form id="uploadForm" class="space-y-5">
             
-            <!-- منطقة الرفع -->
-            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-purple-500 transition cursor-pointer relative bg-gray-900/50">
+            <!-- حقل رفع الملف -->
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center hover:border-purple-500 transition cursor-pointer relative bg-gray-900/50">
                 <input type="file" id="mediaFile" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" required>
                 <div class="flex flex-col items-center">
-                    <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-10 h-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
-                    <p class="text-sm text-gray-300 font-medium">اضغط هنا لرفع الملف أو اسحبه وأفلته هنا</p>
-                    <p class="text-xs text-gray-500 mt-1">يدعم صور (PNG, JPG) وفيديوهات (MP4)</p>
-                    <span id="fileName" class="text-xs text-purple-400 mt-3 font-semibold"></span>
+                    <p class="text-sm text-gray-300 font-medium">اختر صورة أو فيديو أو اسحبه هنا</p>
+                    <span id="fileName" class="text-xs text-purple-400 mt-2 font-semibold"></span>
                 </div>
+            </div>
+
+            <!-- حقل الوصف النصي -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">وصف الفيديو المطلوب (Prompt):</label>
+                <textarea id="promptText" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:border-purple-500 focus:outline-none" placeholder="صف كيف تريد أن يتحرك الفيديو أو التعديلات المطلوبة..." required></textarea>
+            </div>
+
+            <!-- اختيار المدة الزمنية -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">المدة الزمنية بالفيديو:</label>
+                <select id="durationSelect" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:border-purple-500 focus:outline-none">
+                    <option value="5">5 ثوانٍ (سريع)</option>
+                    <option value="10">10 ثوانٍ (متوسط)</option>
+                    <option value="15">15 ثانية (اقصى مدة مقترحة)</option>
+                </select>
             </div>
 
             <!-- زر الإرسال -->
@@ -37,11 +51,23 @@
             </button>
         </form>
 
-        <!-- قسم عرض النتيجة (مخفي مؤقتاً) -->
-        <div id="resultSection" class="hidden mt-8 text-center border-t border-gray-700 pt-6">
-            <h2 class="text-xl font-semibold mb-4 text-purple-300">النتيجة:</h2>
-            <div id="outputContainer" class="bg-gray-900 rounded-xl p-4 flex items-center justify-center min-h-[150px]">
-                <p id="statusText" class="text-gray-400 animate-pulse">جاري معالجة الملف بواسطة الذكاء الاصطناعي... يرجى الانتظار.</p>
+        <!-- قسم شريط التحميل والنتيجة -->
+        <div id="resultSection" class="hidden mt-8 border-t border-gray-700 pt-6">
+            <h2 class="text-lg font-semibold mb-3 text-purple-300 text-center">حالة المعالجة:</h2>
+            
+            <!-- شريط التقدم (Progress Bar) -->
+            <div class="w-full bg-gray-700 rounded-full h-4 mb-3 overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- معلومات الوقت بالنسبة المئوية والمتبقي -->
+            <div class="flex justify-between text-xs text-gray-400 mb-4">
+                <span id="progressPercent">0%</span>
+                <span id="timeRemaining">الوقت المقدر المتبقي: جاري الحساب...</span>
+            </div>
+
+            <div id="outputContainer" class="bg-gray-900 rounded-xl p-4 text-center">
+                <p id="statusText" class="text-gray-400">جاري إرسال البيانات وبدء المعالجة...</p>
             </div>
         </div>
     </div>
@@ -53,32 +79,52 @@
         const resultSection = document.getElementById('resultSection');
         const statusText = document.getElementById('statusText');
         const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const timeRemaining = document.getElementById('timeRemaining');
 
-        // ضع رابط السيرفر الخاص بك هنا (عند رفعه على Render، أو استعمل localhost للتجربة المحلية)
         const BACKEND_URL = "http://127.0.0.1:8000/upload/"; 
-        // مثال لرابط Render لاحقاً: "https://aivedio-backend.onrender.com/upload/"
 
-        // إظهار اسم الملف المختار
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 fileNameSpan.textContent = `الملف المختار: ${e.target.files[0].name}`;
             }
         });
 
-        // إرسال الملف فعلياً إلى السيرفر
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!fileInput.files.length) return;
 
             const file = fileInput.files[0];
+            const prompt = document.getElementById('promptText').value;
+            const duration = document.getElementById('durationSelect').value;
+
             const formData = new FormData();
             formData.append("file", file);
+            formData.append("prompt", prompt);
+            formData.append("duration", duration);
 
-            // إظهار قسم النتيجة بحالة التحميل
+            // إظهار قسم التقدم وتجميد الزر
             resultSection.classList.remove('hidden');
-            statusText.textContent = "جاري رفع الملف إلى الخادم والمعالجة...";
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // محاكاة شريط التحميل بناءً على المدة المختارة (كل ثانية فيديو = ~1.5 ثانية معالجة تقريبية للتجربة)
+            let totalEstimatedTime = parseInt(duration) * 1500; // بالمللي ثانية
+            let elapsedTime = 0;
+            let intervalTime = 100;
+
+            let progressInterval = setInterval(() => {
+                elapsedTime += intervalTime;
+                let percent = Math.min(Math.floor((elapsedTime / totalEstimatedTime) * 100), 95);
+                
+                progressBar.style.width = percent + '%';
+                progressPercent.textContent = percent + '%';
+
+                let remainingSeconds = Math.ceil((totalEstimatedTime - elapsedTime) / 1000);
+                if (remainingSeconds < 0) remainingSeconds = 0;
+                timeRemaining.textContent = `الوقت المقدر المتبقي: ${remainingSeconds} ثانية`;
+            }, intervalTime);
 
             try {
                 const response = await fetch(BACKEND_URL, {
@@ -88,17 +134,24 @@
 
                 const data = await response.json();
 
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                timeRemaining.textContent = 'اكتملت المعالجة بنجاح!';
+
                 if (response.ok) {
                     statusText.innerHTML = `
-                        <span class="text-green-400 font-bold">✨ تم بنجاح!</span><br>
-                        <span class="text-sm text-gray-300 mt-2 block">اسم الملف المستلم: ${data.filename}</span>
-                        <p class="text-xs text-gray-500 mt-2">المسار على السيرفر: ${data.saved_path}</p>
+                        <span class="text-green-400 font-bold">✨ تم إنشاء الفيديو بنجاح!</span><br>
+                        <span class="text-xs text-gray-300 mt-2 block">الوصف المستخدم: ${data.prompt}</span>
+                        <span class="text-xs text-gray-300">المدة المطلوبة: ${data.duration} ثوانٍ</span>
                     `;
                 } else {
-                    throw new Error(data.detail || "حدث خطأ غير معروف أثناء المعالجة.");
+                    throw new Error(data.detail || "حدث خطأ أثناء المعالجة.");
                 }
             } catch (error) {
-                statusText.innerHTML = `<span class="text-red-400">❌ فشل الاتصال بالخادم: تأكد من تشغيل سيرفر البايثون أو صحة الرابط. (${error.message})</span>`;
+                clearInterval(progressInterval);
+                statusText.innerHTML = `<span class="text-red-400">❌ فشل الاتصال: ${error.message}</span>`;
+                timeRemaining.textContent = 'توقف العمليات';
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
