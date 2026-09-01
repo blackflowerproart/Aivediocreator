@@ -1,44 +1,45 @@
-
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 
-app = FastAPI(title="AI Video Generator API", version="1.0")
+app = FastAPI(title="AI Video Generator API", version="1.1")
 
-# السماح للواجهة الأمامية (Frontend) بالاتصال بالخلفية
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # يمكنك تحديد النطاق الخاص بك لاحقاً للأمان
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# إنشاء مجلد لحفظ الملفات المرفوعة مؤقتاً
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @app.get("/")
 def read_root():
-    return {"message": "مرحباً بك في خلفية نظام توليد الفيديوهات بالذكاء الاصطناعي يعمل بنجاح! 🚀"}
+    return {"message": "الخلفية تعمل بنجاح وجاهزة لاستلام الطلبات مع الوصف والمدة! 🚀"}
 
 @app.post("/upload/")
-async def upload_media(file: UploadFile = File(...)):
+async def upload_media(
+    file: UploadFile = File(...),
+    prompt: str = Form(...),
+    duration: int = Form(...)
+):
     try:
-        # مسار حفظ الملف
         file_path = os.path.join(UPLOAD_DIR, file.filename)
         
-        # حفظ الملف المرفوع في الخادم
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
-        # [ملاحظة]: هنا لاحقاً سنقوم بإرسال مسار `file_path` إلى نموذج الذكاء الاصطناعي (مثل Stable Video Diffusion أو API خارجي)
+        # [ملاحظة تخصصية]: هنا يتم تمرير `file_path` و `prompt` و `duration` لنموذج الذكاء الاصطناعي لاحقاً
         
         return {
             "success": True,
-            "message": "تم رفع الملف ومعالجته مبدئياً بنجاح!",
+            "message": "تم استلام الملف والبيانات بنجاح!",
             "filename": file.filename,
+            "prompt": prompt,
+            "duration": duration,
             "saved_path": file_path
         }
     except Exception as e:
