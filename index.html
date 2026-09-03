@@ -3,92 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>توليد وتعديل الفيديوهات بالذكاء الاصطناعي</title>
-    <!-- Tailwind CSS CDN -->
+    <title>مساعد الذكاء الاصطناعي - Meta AI Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="h-screen flex flex-col justify-between overflow-hidden">
 
-    <div class="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8">
+    <!-- شريط العلوى (Header) -->
+    <header class="bg-[#1e1e1e] border-b border-zinc-800 px-6 py-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-bold text-white shadow-lg">
+                AI
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-zinc-100">مساعد الذكاء الاصطناعي المرئي</h1>
+                <p class="text-xs text-zinc-400">تحليل وتعديل الصور والفيديوهات بذكاء</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs text-zinc-400">متصل بالخادم</span>
+        </div>
+    </header>
+
+    <!-- منطقة المحادثة والرسائل (Chat Stream) -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-4xl w-full mx-auto">
         
-        <!-- عنوان الصفحة -->
-        <div class="text-center mb-8">
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 mb-2">
-                مولد الفيديوهات بالذكاء الاصطناعي
-            </h1>
-            <p class="text-slate-400 text-sm">قم برفع صورتك أو فيديو وكتابة وصفك لتحويله إلى فيديو احترافي</p>
+        <!-- رسالة الترحيب من المساعد -->
+        <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                AI
+            </div>
+            <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-lg shadow-sm text-sm leading-relaxed text-zinc-200">
+                أهلاً بك! أنا مساعدك الذكي. قم برفع صورة أو فيديو، واكتب لي الوصف أو الحركة المطلوبة (مثل تحريك العناصر، تعديل الفريمات، أو إضافة تأثيرات)، وسأقوم بمعالجتها لك فوراُ. 🚀
+            </div>
         </div>
 
-        <!-- نموذج الرفع -->
-        <form id="uploadForm" class="space-y-6">
+    </main>
+
+    <!-- شريط الإدخال السفلي (Sticky Input Bar) -->
+    <footer class="bg-[#1e1e1e] border-t border-zinc-800 p-4 shadow-lg">
+        <form id="chatForm" class="max-w-4xl mx-auto flex flex-col gap-3">
             
-            <!-- حقل رفع الملف -->
-            <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">اختر ملف (صورة أو فيديو)</label>
-                <div class="flex items-center justify-center w-full">
-                    <label for="mediaFile" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-700 border-dashed rounded-xl cursor-pointer bg-slate-800/50 hover:bg-slate-800 transition duration-200">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
-                            <svg class="w-8 h-8 mb-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                            <p class="mb-2 text-sm text-slate-300"><span class="font-semibold">انقر للرفع</span> أو سحب وإفلات</p>
-                            <p id="fileName" class="text-xs text-slate-400">PNG, JPG, MP4, MOV</p>
-                        </div>
-                        <input id="mediaFile" type="file" class="hidden" accept="image/*,video/*" required />
-                    </label>
-                </div>
+            <!-- معاينة الملف المرفق إن وجد -->
+            <div id="filePreviewContainer" class="hidden items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 py-2 rounded-xl w-fit">
+                <span id="previewFileName" class="text-xs text-indigo-400 font-medium"></span>
+                <button type="button" id="removeFileBtn" class="text-zinc-400 hover:text-red-400 text-xs">✕ إزالة</button>
             </div>
 
-            <!-- حقل الوصف (Prompt) -->
-            <div>
-                <label for="promptText" class="block text-sm font-medium text-slate-300 mb-2">وصف التعديل أو الحركة المطلوبة</label>
-                <textarea id="promptText" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition duration-200" placeholder="اكتب وصفاً تفصيلياً للفيديو الذي ترغب في توليده..." required></textarea>
-            </div>
+            <div class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-2 focus-within:border-indigo-500 transition">
+                
+                <!-- زر إرفاق الملفات -->
+                <label for="mediaFile" class="cursor-pointer text-zinc-400 hover:text-indigo-400 transition p-1" title="رفع صورة أو فيديو">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                    </svg>
+                </label>
+                <input id="mediaFile" type="file" class="hidden" accept="image/*,video/*">
 
-            <!-- اختيار مدة الفيديو -->
-            <div>
-                <label for="durationSelect" class="block text-sm font-medium text-slate-300 mb-2">مدة الفيديو التقديرية</label>
-                <select id="durationSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-purple-500 transition duration-200">
-                    <option value="5">5 ثوانٍ (سريع)</option>
-                    <option value="10">10 ثوانٍ (متوسط)</option>
-                    <option value="15">15 ثانية (عالي الجودة)</option>
+                <!-- حقل الكتابة -->
+                <textarea id="promptText" rows="1" placeholder="اطرح سؤالاً أو اطلب تعديلاً على الوسائط..." class="flex-1 bg-transparent border-none text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none text-sm py-2"></textarea>
+
+                <!-- مدة المعالجة الخفية أو المتقدمة -->
+                <select id="durationSelect" class="bg-zinc-800 text-zinc-300 text-xs border border-zinc-700 rounded-lg px-2 py-1.5 focus:outline-none hidden sm:block">
+                    <option value="5">5 ثوانٍ</option>
+                    <option value="10">10 ثوانٍ</option>
                 </select>
-            </div>
 
-            <!-- زر الإرسال -->
-            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition duration-200 cursor-pointer">
-                بدء المعالجة والتوليد 🚀
-            </button>
+                <!-- زر الإرسال -->
+                <button type="submit" id="sendBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md disabled:opacity-55 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
         </form>
+    </footer>
 
-        <!-- قسم النتيجة وشريط التقدم -->
-        <div id="resultSection" class="hidden mt-8 pt-6 border-t border-slate-800 text-center space-y-4">
-            <h3 class="text-lg font-semibold text-slate-200">حالة المعالجة</h3>
-            
-            <!-- شريط التقدم -->
-            <div class="w-full bg-slate-800 rounded-full h-4 overflow-hidden p-0.5 border border-slate-700">
-                <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-            
-            <div class="flex justify-between text-xs text-slate-400 px-1">
-                <span id="progressPercent">0%</span>
-                <span id="timeRemaining">جاري الاستعداد... (إذا كان الخادم نائماً، قد يستغرق الاستيقاظ أول مرة 30 ثانية)</span>
-            </div>
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const chatForm = document.getElementById('chatForm');
+        const mediaFile = document.getElementById('mediaFile');
+        const promptText = document.getElementById('promptText');
+        const filePreviewContainer = document.getElementById('filePreviewContainer');
+        const previewFileName = document.getElementById('previewFileName');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const durationSelect = document.getElementById('durationSelect');
 
-            <!-- عرض الفيديو والتحميل -->
-            <div id="statusText" class="mt-4"></div>
-        </div>
+        const SERVER_URL = "https://aivedio-backend.onrender.com";
+        let selectedFile = null;
 
-    </div>
+        // إدارة الملف المرفق
+        mediaFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                previewFileName.textContent = selectedFile.name;
+                filePreviewContainer.classList.remove('hidden');
+                filePreviewContainer.classList.add('flex');
+            }
+        });
 
-    <!-- استدعاء ملف الـ JavaScript المنفصل -->
-    <script src="script.js"></script>
+        removeFileBtn.addEventListener('click', () => {
+            selectedFile = null;
+            mediaFile.value = '';
+            filePreviewContainer.classList.remove('flex');
+            filePreviewContainer.classList.add('hidden');
+        });
+
+        // إرسال الرسالة والطلب
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = promptText.value.trim();
+            if (!text && !selectedFile) return;
+
+            // إضافة رسالة المستخدم في الشات
+            appendUserMessage(text, selectedFile);
+
+            const currentFile = selectedFile;
+            const currentPrompt = text;
+            const currentDuration = durationSelect.value;
+
+            // إعادة تعيين الحقول
+            promptText.value = '';
+            selectedFile = null;
+            mediaFile.value = '';
+            filePreviewContainer.classList.remove('flex');
+            filePreviewContainer.classList.add('hidden');
+            sendBtn.disabled = true;
+
+            // إضافة رسالة "جارٍ التفكير والمعالجة..."
+            const loadingId = appendLoadingMessage();
+
+            const formData = new FormData();
+            if (currentFile) formData.append("file", currentFile);
+            formData.append("prompt", currentPrompt || "معالجة وتحريك الوسائط");
+            formData.append("duration", currentDuration);
+
+            try {
+                const response = await fetch(`${SERVER_URL}/upload/`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                removeMessage(loadingId);
+
+                if (response.ok) {
+                    const fullDownloadUrl = SERVER_URL + data.download_url;
+                    
+                    // جلب الفيديو كـ Blob لضمان سلاسة العرض
+                    const videoRes = await fetch(fullDownloadUrl);
+                    const videoBlob = await videoRes.blob();
+                    const videoUrl = URL.createObjectURL(videoBlob);
+
+                    appendAIMessageWithVideo(videoUrl, data.filename);
+                } else {
+                    appendAIMessageError(data.detail || "حدث خطأ أثناء المعالجة.");
+                }
+            } catch (err) {
+                removeMessage(loadingId);
+                appendAIMessageError("فشل الاتصال بالخادم. تأكد من أن السيرفر يعمل.");
+            } finally {
+                sendBtn.disabled = false;
+            }
+        });
+
+        function appendUserMessage(text, file) {
+            let fileHtml = '';
+            if (file) {
+                fileHtml = `<div class="text-xs text-indigo-300 mb-1">📎 مرفق: ${file.name}</div>`;
+            }
+            const html = `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tl-none p-4 max-w-lg shadow-sm text-sm leading-relaxed">
+                        ${fileHtml}
+                        <div>${escapeHtml(text)}</div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-zinc-700 flex-shrink-0 flex items-center justify-center text-sm font-bold text-zinc-200">
+                        أنت
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function appendLoadingMessage() {
+            const id = 'loading-' + Date.now();
+            const html = `
+                <div id="${id}" class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                        AI
+                    </div>
+                    <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 shadow-sm text-sm text-zinc-400 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></span>
+                        <span>جاري تحليل الصورة والوصف وتوليد الإطارات... (قد يستغرق بضع ثوانٍ)</span>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+            return id;
+        }
+
+        function removeMessage(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function appendAIMessageWithVideo(videoUrl, filename) {
+            const html = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                        AI
+                    </div>
+                    <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-sm sm:max-w-md shadow-sm space-y-3">
+                        <p class="text-sm text-zinc-200 font-medium">✨ تم إنشاء وتعديل الفيديو بنجاح:</p>
+                        <video controls autoplay class="w-full rounded-xl border border-zinc-700 shadow-md">
+                            <source src="${videoUrl}" type="video/mp4">
+                            متصفحك لا يدعم تشغيل الفيديو.
+                        </video>
+                        <a href="${videoUrl}" download="${filename}" class="block text-center bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded-xl text-xs transition shadow">
+                            تحميل الفيديو (MP4) 📥
+                        </a>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function appendAIMessageError(errorMsg) {
+            const html = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                        AI
+                    </div>
+                    <div class="bg-red-950/40 border border-red-900/50 rounded-2xl rounded-tr-none p-4 text-sm text-red-300">
+                        ❌ خطأ: ${escapeHtml(errorMsg)}
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
 </body>
 </html>
