@@ -8,7 +8,7 @@ const removeFileBtn = document.getElementById('removeFileBtn');
 const sendBtn = document.getElementById('sendBtn');
 const durationSelect = document.getElementById('durationSelect');
 
-// رابط الـ ngrok الحالي المحدث
+// رابط الـ ngrok الحالي المحدث والمتصل بالسيرفر المحلي
 const SERVER_URL = "https://candle-purifier-prevent.ngrok-free.dev";
 let selectedFile = null;
 
@@ -50,7 +50,7 @@ chatForm.addEventListener('submit', async (e) => {
     filePreviewContainer.classList.add('hidden');
     sendBtn.disabled = true;
 
-    // إضافة رسالة "جارٍ المعالجة بواسطة كارت الشاشة المحلي..."
+    // إضافة رسالة "جارٍ المعالجة عبر سيرفرك المحلي..."
     const loadingId = appendLoadingMessage();
 
     const formData = new FormData();
@@ -73,7 +73,7 @@ chatForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             const fullDownloadUrl = SERVER_URL + data.download_url;
             
-            // جلب الفيديو كـ Blob لضمان سلاسة العرض مع تمرير هيدر التخطي أيضاً
+            // جلب الفيديو الناتج كـ Blob لضمان سلاسة عرضه مع تمرير هيدر التخطي أيضاً
             const videoRes = await fetch(fullDownloadUrl, {
                 headers: {
                     "ngrok-skip-browser-warning": "69420"
@@ -123,7 +123,7 @@ function appendLoadingMessage() {
             </div>
             <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 shadow-sm text-sm text-zinc-400 flex items-center gap-2">
                 <span class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></span>
-                <span>جاري معالجة الصورة وتحريك العناصر عبر كارت الشاشة المحلي...</span>
+                <span>جاري معالجة الصورة وتحريك العناصر عبر سيرفرك المحلي...</span>
             </div>
         </div>
     `;
@@ -144,7 +144,7 @@ function appendAIMessageWithVideo(videoUrl, filename) {
                 AI
             </div>
             <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-sm sm:max-w-md shadow-sm space-y-3">
-                <p class="text-sm text-zinc-200 font-medium">✨ تم تنفيذ الحركة وتحتوي على النتيجة:</p>
+                <p class="text-sm text-zinc-200 font-medium">✨ تم تنفيذ المعالجة بنجاح:</p>
                 <video controls autoplay class="w-full rounded-xl border border-zinc-700 shadow-md">
                     <source src="${videoUrl}" type="video/mp4">
                     متصفحك لا يدعم تشغيل الفيديو.
