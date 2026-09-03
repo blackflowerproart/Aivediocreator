@@ -8,7 +8,7 @@ const removeFileBtn = document.getElementById('removeFileBtn');
 const sendBtn = document.getElementById('sendBtn');
 const durationSelect = document.getElementById('durationSelect');
 
-// تم تحديث الرابط هنا ليقود مباشرة إلى سيرفرك المحلي عبر ngrok
+// رابط الـ ngrok الحالي المحدث
 const SERVER_URL = "https://candle-purifier-prevent.ngrok-free.dev";
 let selectedFile = null;
 
@@ -61,6 +61,9 @@ chatForm.addEventListener('submit', async (e) => {
     try {
         const response = await fetch(`${SERVER_URL}/upload/`, {
             method: 'POST',
+            headers: {
+                "ngrok-skip-browser-warning": "69420" // تجاوز صفحة التحذير التلقائية لـ ngrok
+            },
             body: formData
         });
 
@@ -70,8 +73,12 @@ chatForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             const fullDownloadUrl = SERVER_URL + data.download_url;
             
-            // جلب الفيديو كـ Blob لضمان سلاسة العرض
-            const videoRes = await fetch(fullDownloadUrl);
+            // جلب الفيديو كـ Blob لضمان سلاسة العرض مع تمرير هيدر التخطي أيضاً
+            const videoRes = await fetch(fullDownloadUrl, {
+                headers: {
+                    "ngrok-skip-browser-warning": "69420"
+                }
+            });
             const videoBlob = await videoRes.blob();
             const videoUrl = URL.createObjectURL(videoBlob);
 
