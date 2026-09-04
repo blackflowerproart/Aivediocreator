@@ -3,283 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد الذكاء الاصطناعي - Meta AI Style</title>
+    <title>منصة الذكاء الاصطناعي السحابية</title>
+    <!-- Tailwind CSS للتصميم السريع -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        /* تخصيص شريط التمرير */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
+        body { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body class="h-screen flex flex-col justify-between overflow-hidden">
+<body class="bg-[#121214] text-zinc-100 h-screen flex flex-col justify-between">
 
-    <!-- شريط العلوى (Header) -->
-    <header class="bg-[#1e1e1e] border-b border-zinc-800 px-6 py-4 flex items-center justify-between shadow-md">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-bold text-white shadow-lg">
-                AI
-            </div>
-            <div>
-                <h1 class="text-lg font-bold text-zinc-100">مساعد الذكاء الاصطناعي المرئي</h1>
-                <p class="text-xs text-zinc-400">تحليل وتعديل الصور والفيديوهات بذكاء</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs text-zinc-400">متصل بالخادم</span>
-        </div>
+    <!-- الهيدر العلوي -->
+    <header class="bg-[#18181b] border-b border-zinc-800 p-4 text-center shadow-md">
+        <h1 class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+            🤖 منصة الذكاء الاصطناعي السحابية (Gemini API)
+        </h1>
     </header>
 
-    <!-- منطقة المحادثة والرسائل (Chat Stream) -->
-    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-4xl w-full mx-auto">
-        
-        <!-- رسالة الترحيب من المساعد -->
+    <!-- منطقة المحادثة -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl w-full mx-auto">
+        <!-- رسالة ترحيبية أولية -->
         <div class="flex items-start gap-3">
             <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
                 AI
             </div>
-            <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-lg shadow-sm text-sm leading-relaxed text-zinc-200">
-                أهلاً بك! أنا مساعدك الذكي. قم برفع صورة أو فيديو، واكتب لي الوصف أو الحركة المطلوبة (مثل تحريك العناصر، تعديل الفريمات، أو إضافة تأثيرات)، وسأقوم بمعالجتها لك فوراُ. 🚀
+            <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-md shadow-sm text-sm text-zinc-300 leading-relaxed">
+                مرحباً بك! أنا مساعدك الذكي السحابي. اكتب لي أي سؤال أو استفسار وسأقوم بالإجابة عليه فوراً عبر السحابة.
             </div>
         </div>
-
     </main>
 
-    <!-- شريط الإدخال السفلي (Sticky Input Bar) -->
-    <footer class="bg-[#1e1e1e] border-t border-zinc-800 p-4 shadow-lg">
-        <form id="chatForm" class="max-w-4xl mx-auto flex flex-col gap-3">
-            
-            <!-- معاينة الملف المرفق إن وجد -->
-            <div id="filePreviewContainer" class="hidden items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 py-2 rounded-xl w-fit">
-                <span id="previewFileName" class="text-xs text-indigo-400 font-medium"></span>
-                <button type="button" id="removeFileBtn" class="text-zinc-400 hover:text-red-400 text-xs">✕ إزالة</button>
-            </div>
-
-            <div class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-2 focus-within:border-indigo-500 transition">
-                
-                <!-- زر إرفاق الملفات -->
-                <label for="mediaFile" class="cursor-pointer text-zinc-400 hover:text-indigo-400 transition p-1" title="رفع صورة أو فيديو">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
-                    </svg>
-                </label>
-                <input id="mediaFile" type="file" class="hidden" accept="image/*,video/*">
-
-                <!-- حقل الكتابة -->
-                <textarea id="promptText" rows="1" placeholder="اطرح سؤالاً أو اطلب تعديلاً على الوسائط..." class="flex-1 bg-transparent border-none text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none text-sm py-2"></textarea>
-
-                <!-- مدة المعالجة الخفية أو المتقدمة -->
-                <select id="durationSelect" class="bg-zinc-800 text-zinc-300 text-xs border border-zinc-700 rounded-lg px-2 py-1.5 focus:outline-none hidden sm:block">
-                    <option value="5">5 ثوانٍ</option>
-                    <option value="10">10 ثوانٍ</option>
-                </select>
-
-                <!-- زر الإرسال -->
-                <button type="submit" id="sendBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition shadow-md disabled:opacity-55 disabled:cursor-not-allowed">
-                    <svg class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
-                </button>
-            </div>
+    <!-- صندوق الإدخال وإرسال الرسائل -->
+    <footer class="bg-[#18181b] border-t border-zinc-800 p-4">
+        <form id="chatForm" class="max-w-3xl mx-auto flex gap-3 items-center">
+            <input 
+                type="text" 
+                id="promptText" 
+                placeholder="اكتب رسالتك أو استفسارك هنا..." 
+                autocomplete="off"
+                class="flex-1 bg-[#27272a] border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition shadow-inner"
+                required
+            >
+            <button 
+                type="submit" 
+                id="sendBtn"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-xl text-sm transition shadow-md flex items-center justify-center"
+            >
+                إرسال 🚀
+            </button>
         </form>
     </footer>
 
-    <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const chatForm = document.getElementById('chatForm');
-        const mediaFile = document.getElementById('mediaFile');
-        const promptText = document.getElementById('promptText');
-        const filePreviewContainer = document.getElementById('filePreviewContainer');
-        const previewFileName = document.getElementById('previewFileName');
-        const removeFileBtn = document.getElementById('removeFileBtn');
-        const sendBtn = document.getElementById('sendBtn');
-        const durationSelect = document.getElementById('durationSelect');
-
-        const SERVER_URL = "https://aivedio-backend.onrender.com";
-        let selectedFile = null;
-
-        // إدارة الملف المرفق
-        mediaFile.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                selectedFile = e.target.files[0];
-                previewFileName.textContent = selectedFile.name;
-                filePreviewContainer.classList.remove('hidden');
-                filePreviewContainer.classList.add('flex');
-            }
-        });
-
-        removeFileBtn.addEventListener('click', () => {
-            selectedFile = null;
-            mediaFile.value = '';
-            filePreviewContainer.classList.remove('flex');
-            filePreviewContainer.classList.add('hidden');
-        });
-
-        // إرسال الرسالة والطلب
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = promptText.value.trim();
-            if (!text && !selectedFile) return;
-
-            // إضافة رسالة المستخدم في الشات
-            appendUserMessage(text, selectedFile);
-
-            const currentFile = selectedFile;
-            const currentPrompt = text;
-            const currentDuration = durationSelect.value;
-
-            // إعادة تعيين الحقول
-            promptText.value = '';
-            selectedFile = null;
-            mediaFile.value = '';
-            filePreviewContainer.classList.remove('flex');
-            filePreviewContainer.classList.add('hidden');
-            sendBtn.disabled = true;
-
-            // إضافة رسالة "جارٍ التفكير والمعالجة..."
-            const loadingId = appendLoadingMessage();
-
-            const formData = new FormData();
-            if (currentFile) formData.append("file", currentFile);
-            formData.append("prompt", currentPrompt || "معالجة وتحريك الوسائط");
-            formData.append("duration", currentDuration);
-
-            try {
-                const response = await fetch(`${SERVER_URL}/upload/`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                removeMessage(loadingId);
-
-                if (response.ok) {
-                    const fullDownloadUrl = SERVER_URL + data.download_url;
-                    
-                    // جلب الفيديو كـ Blob لضمان سلاسة العرض
-                    const videoRes = await fetch(fullDownloadUrl);
-                    const videoBlob = await videoRes.blob();
-                    const videoUrl = URL.createObjectURL(videoBlob);
-
-                    appendAIMessageWithVideo(videoUrl, data.filename);
-                } else {
-                    appendAIMessageError(data.detail || "حدث خطأ أثناء المعالجة.");
-                }
-            } catch (err) {
-                removeMessage(loadingId);
-                appendAIMessageError("فشل الاتصال بالخادم. تأكد من أن السيرفر يعمل.");
-            } finally {
-                sendBtn.disabled = false;
-            }
-        });
-
-        function appendUserMessage(text, file) {
-            let fileHtml = '';
-            if (file) {
-                fileHtml = `<div class="text-xs text-indigo-300 mb-1">📎 مرفق: ${file.name}</div>`;
-            }
-            const html = `
-                <div class="flex items-start gap-3 justify-end">
-                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tl-none p-4 max-w-lg shadow-sm text-sm leading-relaxed">
-                        ${fileHtml}
-                        <div>${escapeHtml(text)}</div>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-zinc-700 flex-shrink-0 flex items-center justify-center text-sm font-bold text-zinc-200">
-                        أنت
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', html);
-            scrollToBottom();
-        }
-
-        function appendLoadingMessage() {
-            const id = 'loading-' + Date.now();
-            const html = `
-                <div id="${id}" class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
-                        AI
-                    </div>
-                    <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 shadow-sm text-sm text-zinc-400 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></span>
-                        <span>جاري تحليل الصورة والوصف وتوليد الإطارات... (قد يستغرق بضع ثوانٍ)</span>
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', html);
-            scrollToBottom();
-            return id;
-        }
-
-        function removeMessage(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-        }
-
-        function appendAIMessageWithVideo(videoUrl, filename) {
-            const html = `
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
-                        AI
-                    </div>
-                    <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-sm sm:max-w-md shadow-sm space-y-3">
-                        <p class="text-sm text-zinc-200 font-medium">✨ تم إنشاء وتعديل الفيديو بنجاح:</p>
-                        <video controls autoplay class="w-full rounded-xl border border-zinc-700 shadow-md">
-                            <source src="${videoUrl}" type="video/mp4">
-                            متصفحك لا يدعم تشغيل الفيديو.
-                        </video>
-                        <a href="${videoUrl}" download="${filename}" class="block text-center bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded-xl text-xs transition shadow">
-                            تحميل الفيديو (MP4) 📥
-                        </a>
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', html);
-            scrollToBottom();
-        }
-
-        function appendAIMessageError(errorMsg) {
-            const html = `
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
-                        AI
-                    </div>
-                    <div class="bg-red-950/40 border border-red-900/50 rounded-2xl rounded-tr-none p-4 text-sm text-red-300">
-                        ❌ خطأ: ${escapeHtml(errorMsg)}
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', html);
-            scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-    </script>
+    <!-- ربط ملف الجافاسكريبت -->
+    <script src="script.js"></script>
 </body>
 </html>
