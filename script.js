@@ -6,7 +6,7 @@ const sendBtn = document.getElementById('sendBtn');
 // مفتاح Groq API الخاص بك
 const API_KEY = "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"; 
 
-// نقطة الاتصال الخاصة بـ Groq ونموذج llama-3.3-70b-versatile السريع والذكي
+// نقطة الاتصال الخاصة بـ Groq
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 chatForm.addEventListener('submit', async (e) => {
@@ -28,7 +28,7 @@ chatForm.addEventListener('submit', async (e) => {
                 'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
+                model: "llama-3.1-8b-instant", // نموذج نشط وسريع جداً
                 messages: [
                     { role: "user", content: text }
                 ]
