@@ -3,52 +3,51 @@ const chatForm = document.getElementById('chatForm');
 const promptText = document.getElementById('promptText');
 const sendBtn = document.getElementById('sendBtn');
 
-// مفتاح الـ API الخاص بـ Gemini الذي قمت بتوفيره
-const API_KEY = "AQ.Ab8RN6Iv0ZTHH10fA-CNBTSL_mJmEHU2jQ9Y_FI69aMIL7MHHw"; 
+// مفتاح Groq API الخاص بك
+const API_KEY = "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"; 
 
-// استخدام نموذج gemini-1.5-flash الأسرع والأكثر كفاءة للدردشة
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+// نقطة الاتصال الخاصة بـ Groq ونموذج llama-3.3-70b-versatile السريع والذكي
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = promptText.value.trim();
     if (!text) return;
 
-    // 1. عرض رسالة المستخدم في واجهة الشات
     appendUserMessage(text);
     promptText.value = '';
     sendBtn.disabled = true;
 
-    // 2. إظهار مؤشر التحميل (جارٍ التفكير...)
     const loadingId = appendLoadingMessage();
 
     try {
-        // 3. إرسال الطلب عبر الـ API إلى سيرفرات جوجل السحابية
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: text }]
-                }]
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    { role: "user", content: text }
+                ]
             })
         });
 
         const data = await response.json();
         removeMessage(loadingId);
 
-        if (response.ok && data.candidates && data.candidates[0].content) {
-            const aiReply = data.candidates[0].content.parts[0].text;
+        if (response.ok && data.choices && data.choices[0].message) {
+            const aiReply = data.choices[0].message.content;
             appendAIMessage(aiReply);
         } else {
-            const errorMsg = data.error ? data.error.message : "حدث خطأ غير متوقع من الخدمة السحابية.";
+            const errorMsg = data.error ? data.error.message : "حدث خطأ غير متوقع من خدمة Groq.";
             appendAIMessageError(errorMsg);
         }
     } catch (err) {
         removeMessage(loadingId);
-        appendAIMessageError("فشل الاتصال بالإنترنت أو بالخدمة السحابية.");
+        appendAIMessageError("فشل الاتصال بالإنترنت أو بخدمة Groq السحابية.");
     } finally {
         sendBtn.disabled = false;
     }
@@ -57,7 +56,7 @@ chatForm.addEventListener('submit', async (e) => {
 function appendUserMessage(text) {
     const html = `
         <div class="flex items-start gap-3 justify-end">
-            <div class="bg-indigo-600 text-white rounded-2xl rounded-tl-none p-4 max-w-lg shadow-sm text-sm leading-relaxed">
+            <div class="bg-orange-600 text-white rounded-2xl rounded-tl-none p-4 max-w-lg shadow-sm text-sm leading-relaxed">
                 <div>${escapeHtml(text)}</div>
             </div>
             <div class="w-8 h-8 rounded-full bg-zinc-700 flex-shrink-0 flex items-center justify-center text-sm font-bold text-zinc-200">
@@ -73,12 +72,12 @@ function appendLoadingMessage() {
     const id = 'loading-' + Date.now();
     const html = `
         <div id="${id}" class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
                 AI
             </div>
             <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 shadow-sm text-sm text-zinc-400 flex items-center gap-2">
-                <span class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></span>
-                <span>جاري معالجة الرد عبر السحابة الذكية...</span>
+                <span class="w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
+                <span>جاري معالجة الرد بسرعة البرق...</span>
             </div>
         </div>
     `;
@@ -95,7 +94,7 @@ function removeMessage(id) {
 function appendAIMessage(text) {
     const html = `
         <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
                 AI
             </div>
             <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-lg shadow-sm text-sm text-zinc-200 leading-relaxed whitespace-pre-line">
@@ -110,7 +109,7 @@ function appendAIMessage(text) {
 function appendAIMessageError(errorMsg) {
     const html = `
         <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
                 AI
             </div>
             <div class="bg-red-950/40 border border-red-900/50 rounded-2xl rounded-tr-none p-4 text-sm text-red-300">
