@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الذكاء الاصطناعي السحابية</title>
-    <!-- Tailwind CSS للتصميم السريع -->
+    <title>منصة الذكاء الاصطناعي السحابية - اختبار</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,30 +15,29 @@
     <!-- الهيدر العلوي -->
     <header class="bg-[#18181b] border-b border-zinc-800 p-4 text-center shadow-md">
         <h1 class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-            🤖 منصة الذكاء الاصطناعي السحابية (Gemini API)
+            🤖 منصة الذكاء الاصطناعي السحابية (وضع الاختبار)
         </h1>
     </header>
 
     <!-- منطقة المحادثة -->
     <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl w-full mx-auto">
-        <!-- رسالة ترحيبية أولية -->
         <div class="flex items-start gap-3">
             <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
                 AI
             </div>
             <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl rounded-tr-none p-4 max-w-md shadow-sm text-sm text-zinc-300 leading-relaxed">
-                مرحباً بك! أنا مساعدك الذكي السحابي. اكتب لي أي سؤال أو استفسار وسأقوم بالإجابة عليه فوراً عبر السحابة.
+                مرحباً بك! أنا جاهز الآن للاختبار عبر السحابة. اكتب لي أي استفسار وسأرد عليك فوراً.
             </div>
         </div>
     </main>
 
-    <!-- صندوق الإدخال وإرسال الرسائل -->
+    <!-- صندوق الإدخال -->
     <footer class="bg-[#18181b] border-t border-zinc-800 p-4">
         <form id="chatForm" class="max-w-3xl mx-auto flex gap-3 items-center">
             <input 
                 type="text" 
                 id="promptText" 
-                placeholder="اكتب رسالتك أو استفسارك هنا..." 
+                placeholder="اكتب رسالتك هنا للاختبار..." 
                 autocomplete="off"
                 class="flex-1 bg-[#27272a] border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition shadow-inner"
                 required
@@ -54,7 +52,6 @@
         </form>
     </footer>
 
-    <!-- ربط ملف الجافاسكريبت -->
     <script src="script.js"></script>
 </body>
 </html>
